@@ -1,0 +1,7 @@
+output-*
+packer_cache
+*.iso
+*.box
+.DS_Store
+.vagrant
+vmware_tools/*.tar.gz
