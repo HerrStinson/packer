@@ -1,20 +1,33 @@
 {
   "description": "Oracle Linux 6.6 Minimal",
+  "variables": {
+    "vmware_cluster": null,
+    "vmware_datacenter": null,
+    "vmware_host": null,
+    "vmware_password": null,
+    "vmware_resource_pool": null,
+    "vmware_username": null,
+    "vmware_datastore": null,
+    "vmware_vm_network": null,
+    "vmware_vm_name": "OL6.6MNML",
+    "vmware_insecure": "true",
+    "vmware_disk_mode": "thin"
+  },
   "post-processors": [
     {
       "type": "vsphere",
       "only": ["vmware-iso"],
-      "cluster": "mycluster",
-      "datacenter": "mydc",
-      "host": "myvcenter",
-      "password": "mypassword",
-      "resource_pool": "myresourcepool",
-      "username": "myuser",
-      "vm_name": "OL6.6MNML",
-      "disk_mode": "thin",
-      "insecure": "true",
-      "datastore": "mydatastore",
-      "vm_network": "mynetwork"
+      "cluster": "{{user `vmware_cluster`}}",
+      "datacenter": "{{user `vmware_datacenter`}}",
+      "host": "{{user `vmware_host`}}",
+      "password": "{{user `vmware_password`}}",
+      "resource_pool": "{{user `vmware_resource_pool`}}",
+      "username": "{{user `vmware_username`}}",
+      "vm_name": "{{user `vmware_vm_name`}}",
+      "disk_mode": "{{user `vmware_disk_mode`}}",
+      "insecure": "{{user `vmware_insecure`}}",
+      "datastore": "{{user `vmware_datastore`}}",
+      "vm_network": "{{user `vmware_vm_network`}}"
     },
     {
       "type": "vagrant",
