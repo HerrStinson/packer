@@ -19,6 +19,12 @@ To only build a single hypervisor version, pass the `--only` flag, like so:
 $ packer build --only=vmware-iso <name of template>.json
 ```
 
+To use the VMware builders with upload capability to a vCenter server, make a copy of the included `vmware-config-template.json` and put in your credentials. Then pass it to packer, like so:
+
+```shell
+$ packer build --only=vmware-iso -var-file vmware-config.json <name of template>.json
+```
+
 Full disclosure: Development happened on a Mac with VMware Fusion 6 and VirtualBox 4.3. Your mileage may vary.
 
 ## Available images
@@ -26,5 +32,6 @@ Full disclosure: Development happened on a Mac with VMware Fusion 6 and VirtualB
 This repository currently houses templates for:
 
 * Windows 2012 R2
+* Ubuntu 14.04
 * Oracle Enterprise Linux 6.6
 * SLES 12

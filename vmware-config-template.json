@@ -1,0 +1,10 @@
+{
+  "vmware_cluster": "My Cluster Name",
+  "vmware_datacenter": "My Datacenter Name",
+  "vmware_host": "vcenter.company.local",
+  "vmware_password": "PASSWORD",
+  "vmware_resource_pool": "My Resource Pool Name",
+  "vmware_username": "root",
+  "vmware_datastore": "My Datastore Name",
+  "vmware_vm_network": "Internal"
+}
