@@ -6,3 +6,4 @@ packer_cache
 .vagrant
 vmware_tools/*.tar.gz
 vmware-config.json
+windows-config.json

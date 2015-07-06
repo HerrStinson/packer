@@ -10,7 +10,9 @@
     "vmware_vm_network": null,
     "vmware_vm_name": "windows_2012_r2",
     "vmware_insecure": "true",
-    "vmware_disk_mode": "thin"
+    "vmware_disk_mode": "thin",
+    "iso_url": "http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_EVAL_EN-US-IRM_SSS_X64FREE_EN-US_DV5.ISO",
+    "iso_checksum": "458ff91f8abc21b75cb544744bf92e6a"
   },
   "post-processors": [
     {
@@ -37,14 +39,15 @@
   "builders": [
     {
       "type": "vmware-iso",
-      "iso_url": "http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_EVAL_EN-US-IRM_SSS_X64FREE_EN-US_DV5.ISO",
+      "communicator": "winrm",
       "iso_checksum_type": "md5",
-      "iso_checksum": "458ff91f8abc21b75cb544744bf92e6a",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_url": "{{ user `iso_url` }}",
       "headless": false,
-      "boot_wait": "2m",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_wait_timeout": "4h",
+      "boot_wait": "5m",
+      "winrm_username": "vagrant",
+      "winrm_password": "vagrant",
+      "winrm_timeout": "4h",
       "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
       "guest_os_type": "windows8srv-64",
       "tools_upload_flavor": "windows",
@@ -53,23 +56,21 @@
       "vnc_port_max": 5980,
       "floppy_files": [
         "./answer_files/2012_r2/Autounattend.xml",
-        "./scripts/windows/microsoft-updates.bat",
-        "./scripts/windows/win-updates.ps1",
-        "./scripts/windows/openssh.ps1"
+        "./scripts/windows/microsoft-updates.bat"
       ],
       "vmx_data": {
         "RemoteDisplay.vnc.enabled": "false",
         "RemoteDisplay.vnc.port": "5900",
-        "memsize": "2048",
+        "memsize": "6144",
         "numvcpus": "2",
         "scsi0.virtualDev": "lsisas1068"
       }
     },
     {
       "type": "virtualbox-iso",
-      "iso_url": "http://download.microsoft.com/download/6/2/A/62A76ABB-9990-4EFC-A4FE-C7D698DAEB96/9600.16384.WINBLUE_RTM.130821-1623_X64FRE_SERVER_EVAL_EN-US-IRM_SSS_X64FREE_EN-US_DV5.ISO",
       "iso_checksum_type": "md5",
-      "iso_checksum": "458ff91f8abc21b75cb544744bf92e6a",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_url": "{{ user `iso_url` }}",
       "headless": false,
       "boot_wait": "2m",
       "ssh_username": "vagrant",
@@ -103,9 +104,20 @@
   ],
   "provisioners": [
     {
+      "type": "windows-shell",
+      "only": ["vmware-iso"],
+      "scripts": [
+        "./scripts/windows/vm-guest-tools.bat",
+        "./scripts/windows/chef.bat",
+        "./scripts/windows/enable-rdp.bat",
+        "./scripts/windows/compile-dotnet-assemblies.bat",
+        "./scripts/windows/disable-auto-logon.bat",
+        "./scripts/windows/compact.bat"
+      ]
+    },
+    {
       "type": "shell",
-      "remote_path": "/tmp/script.bat",
-      "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
+      "only": ["virtualbox-iso"],
       "scripts": [
         "./scripts/windows/vm-guest-tools.bat",
         "./scripts/windows/chef.bat",
@@ -118,6 +130,7 @@
     },
     {
       "type": "shell",
+      "only": ["virtualbox-iso"],
       "inline": [
         "rm -rf /tmp/*"
       ]
